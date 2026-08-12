@@ -12,13 +12,106 @@ Title: Migrating notes to github
 Links:
 <a href="#latest">Latest</a>
 
-
 -----> Summary
+
+Create new repository on github account
+    https://github.com/bitterbark/bitterbark_notes
+Local repo /home/bundy/Notes_GH
+
+View online:
+<a href="https://bitterbark.github.io/bitterbark_notes/">https://bitterbark.github.io/bitterbark_notes/</a>
+Made from local file
+/home/bundy/Notes_GH/index.html
+
+Links:
+<a href="#latest">Status</a>
+<a href="#GeneratingGHtoken">Generating GH token</a>
+
+-----> How to create a link
+Super easy: they are just like local links. So this file is linked in
+index.html with this:
+<a href="./migrating_notes_to_github.html">migrating_notes_to_github.html</a>
+
+
+<a id="GeneratingGHtoken">
+-----> Generating GH token
+
+Click your profile picture (top-right corner)
+Click Settings
+Scroll all the way down the left sidebar - Developer settings is the last item, below all the account stuff
+Then: Personal access tokens -> Tokens (classic) -> Generate new token
+
+Direct link (should work if you're logged in):
+     https://github.com/settings/tokensa
+
+Yes, fine-grained tokens work fine for git push over HTTPS.
+
+Quick setup:
+
+Give it a name and expiration
+Under Repository access, select "Only select repositories" and pick your repo (or "All repositories" if simpler)
+Under Permissions -> Repository permissions, select Contents and then set to Read and write
+Generate, then copy the token
+Paste it as the password when git prompts you.
+<Note: you have to enter your user name first when it prompts>
+<Note: it doesn't show up, just paste and hit enter>
+
+One catch: if your repo is under an organization, the org may need to
+approve fine-grained tokens before they work - classic tokens don't have
+this restriction. If you hit a permission error after setup, that's likely
+why, and classic would be the simpler fallback.
+<This didn't happen>
+
+
+
+--SSH key <OUTDATED>
+Check for ssh key
+humboldt:/home/bundy/Notes_GH% cat ~/.ssh/known_hosts | grep git
+github.com,140.82.113.4 ssh-rsa ...
+
+If not, go through generation:
+<a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent</a>
+
+-----> Create local repository on my computer and link it to gh repo
+(note use https version if not ssh keys)
+%mkdir /home/bundy/Notes_GH/
+%echo "# bitterbark_notes" >> README.md
+%git init
+%git add README.md
+%git commit -m "first commit"
+%git branch -M main
+%git remote add origin git@github.com:bitterbark/bitterbark_notes.git
+(OR  w/o SSH key
+%git remote add origin https://github.com/bitterbark/bitterbark_notes.git)
+)
+%git push -u origin main
+
+Goto repo settings and enable pages (scroll down) 
+  (has to have content/branch in order to do this!)
+"GitHub Pages is currently disabled. Select a source below to enable GitHub
+  Pages for this repository."
+  choose 'main' as the source (cause that's all I got!)
+Click 'Save'
+It refreshes the page. Now when you uscroll down it shows
+
+Your site is ready to be published at
+  https://bitterbark.github.io/github-pages-with-jekyll/.
+AND/OR
+Your GitHub Pages site is currently being built from the main branch.
 
 
 
 -----> Details
 /web/web-data is going away. 
+https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRLkdTMZBmcdHPrqRKgvlgkB
+"If you have a personal web directory where you share notes/diagnostics with
+colleagues, then I would suggest to either move the data files over to our
+FTP server and update the links on your webpage or take advantage of Github
+pages. It offers free web hosting and syncs with your Github account for
+ease of use:
+https://pages.github.com/
+"
+
 They recommended GitHub pages. using it supports my "learning how to use
      github" goal, as well as potential for learning how I could host a
      personal website (from another gh account, obviously!)
@@ -35,15 +128,174 @@ I am trying to follow along with my actual notes while I do this. But it
      migrated code in, where I don't have anything!
 
 So the first thing I need to do is add content. As in, clone the repositroy
-     onto my machine.
+     onto my machine?
+
 So made this dir
 /home/bundy/Notes_GH/
 
+Ah, there are lovely little instructions in my new repository:
+or create a new repository on the command line
+echo "# bitterbark_notes" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/bitterbark/bitterbark_notes.git
+git push -u origin main
+
+I do these below, along with a few gitstatus. It is a little sttrange, but
+     it seems that it just creates a local repository (git init), and then
+     the final 'git push' is what sends it online.
+
+Oh, could also have done 'ssh' instead of 'https'
+git remote add origin git@github.com:bitterbark/bitterbark_notes.git
+WHich is what I need, as well as to add the ssh key. I know there are
+instructions in the MDTF repository for this. 
+<a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent</a>
+
+Hmm, 
+
+humboldt:/home/bundy/Notes_GH% cat ~/.ssh/known_hosts | grep git
+github.com,140.82.113.4 ssh-rsa 
+...
+
+
+Checked and it is live!
+
+humboldt:/home/bundy% cd Notes_GH/
+% echo "# bitterbark_notes" >> README.md
+% git init
+Initialized empty Git repository in /home/bundy/Notes_GH/.git/
+% git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+       README.md
+       migrating_notes_to_github.html
+       migrating_notes_to_github.html.~1~
+
+nothing added to commit but untracked files present (use "git add" to
+       track)
+% git add README.md 
+% git commit -m "first commit"
+[master (root-commit) e18a323] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+% git branch -M main
+% git remote add origin
+       https://github.com/bitterbark/bitterbark_notes.git
+% git status
+On branch main
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	 migrating_notes_to_github.html
+	 migrating_notes_to_github.html.~1~
+
+nothing added to commit but untracked files present (use "git add" to
+	 track)
+% git add migrating_notes_to_github.html
+% git commit -m "meta notes!"
+[main b97bf0e] meta notes!
+ 1 file changed, 49 insertions(+)
+ create mode 100644 migrating_notes_to_github.html
+% git push -u origin main
+Username for 'https://github.com': bitterbark
+Password for 'https://bitterbark@github.com': 
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (6/6), 1.11 KiB | 283.00 KiB/s, done.
+Total 6 (delta 0), reused 0 (delta 0)
+To https://github.com/bitterbark/bitterbark_notes.git
+ * [new branch]      main -> main
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+
+It is live, online!
+
+Now follow the lab instructinos (I am doing it on mine first because I
+thought there was sometthing about only getting one Pages site, not sure if
+it is per repo or per username but I'm not taking any chances!
+
+
+Goto settings, scroll down to Pages, select Main as the source.
+
+Source
+Your GitHub Pages site is currently being built from the main branch. 
+
+Your site is ready to be published at https://bitterbark.github.io/bitterbark_notes/.
+
+It is empty. But live (!)
+
+Repeated it on my learning lab page, and there are new instructions:
+https://github.com/bitterbark/github-pages-with-jekyll/issues/1
+
+Okay, want to push, but I want to change origin from https to ssh.
+Luckily there are <a href="https://docs.github.com/en/free-pro-team@latest/github/using-git/changing-a-remotes-url#switching-remote-urls-from-https-to-ssh">instructions for this</a>
+
+ git remote add origin git@github.com:bitterbark/bitterbark_notes.git
+fatal: remote origin already exists.
+% git remote -v
+    origin https://github.com/bitterbark/bitterbark_notes.git (fetch)
+    origin https://github.com/bitterbark/bitterbark_notes.git (push)
+
+% git remote set-url origin git@github.com:bitterbark/bitterbark_notes.git
+
+Check:
+% git remote -v
+    origin  git@github.com/bitterbark/bitterbark_notes.git (fetch)
+    origin  git@github.com/bitterbark/bitterbark_notes.git (push)
+
+Doesn't work.
+
+git push -u origin main
+fatal: 'git@github.com/bitterbark/bitterbark_notes.git' does not appear to
+    be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+Whoops: I had the replaced github.com: with github.com/  in
+    above. (Corrected)
+
+Yay: my modified index.md file is there.
+What if I want html?
+
+Had to delete index.md, but then it found index.html. Yes!
+
+So I think I need to put Projects/index.html here...
+where is it? And then gotta hope that most of my links are relative!
+
+<a ="latest">
+Oh damn, the problem is the size.
+humboldt:/home/bundy/Notes_GH% du -sh ../web/Projects
+    3.4G../web/Projects
+
+Clean up.. and I'm goingt o have to move the tar files etc to the ftp site?
+Are they going to be viewable from there or will it download?
+I don't want to put the time in right now. But this is what needs to be
+    done:
+
+- clean up web/Projects 
+- try moving existing MDTF results to ftp site
+. if it doesn'tt work, find other solution!
+- mv Projects to Notes_HD. Might just be best to rename NOTES_HD =>
+ Projects ,and copy everything there. 
+- make note web/Projects/README about where it all went
+
+
+Could do branches and pull requests to develop the Notes. That way I could
+view them before overwriting, right! But there is also the jekyll that I
+will need to learn if there is more I wantt tto do (here or elsewhere)
+https://github.com/bitterbark/github-pages-with-jekyll/issues/1
 
 
 
-
-
-
-
-**here
+**
+here
